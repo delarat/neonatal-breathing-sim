@@ -1,13 +1,13 @@
-// Safe to expose in the public frontend. This file must contain ONLY the Supabase URL and public anon key.
-// NEVER put a service_role key, secret key, or administrator credential here.
+// Public frontend settings only. The publishable key is designed for browser use.
+// NEVER put an sb_secret key or legacy service_role key in this file.
 window.APP_CONFIG = {
   supabaseUrl: "",
-  supabaseAnonKey: "",
+  supabasePublishableKey: "",
   studyTitle: "[Insert faculty-approved study title]",
   studyContact: "[Insert principal investigator name and institutional email]",
   ethicsContact: "[Insert faculty ethics committee contact]",
   ethicsApproval: "[Insert approval/reference number]",
   dataRetention: "[Insert approved retention period and storage jurisdiction]",
   consentVersion: "draft-1.0",
-  appVersion: "0.2.1"
+  appVersion: "0.2.2"
 };
