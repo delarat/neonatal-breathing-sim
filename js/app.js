@@ -341,7 +341,7 @@ if (config.studyContact) $("study-contact").textContent = config.studyContact;
 if (config.ethicsContact) $("ethics-contact").textContent = config.ethicsContact;
 if (config.ethicsApproval) $("approval-reference").textContent = config.ethicsApproval;
 if (config.dataRetention) $("data-retention").textContent = config.dataRetention;
-if (config.privacyNotice) $("privacy-copy").textContent = config.privacyNotice;
+if (config.privacyNotice && !config.privacyNotice.includes("[Insert")) $("privacy-copy").textContent = config.privacyNotice;
 if (recruitmentReady) $("approval-note").hidden = true;
 if (TEST_MODE && !recruitmentReady) {
   showNotice("PREVIEW / TEST MODE: deployment is not configured for research. You can explore the eight scenarios, but responses are stored only in this browser and are never sent to a research database. Do not use this link for nurse recruitment.", "info");
