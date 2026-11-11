@@ -4,7 +4,7 @@ A browser-based neonatal breathing observation simulator with eight randomized s
 
 ## Current deployment status
 
-This is a **technical preview only**. The public `config.js` intentionally contains no Supabase URL or public key, and its consent information still contains faculty-approval placeholders. The site therefore automatically uses local test mode. Responses are saved only in browser local storage; no research data are submitted to a server.
+This is a **technical preview only**. The public `config.js` contains the Supabase project URL and publishable key, but `researchCollectionEnabled` is deliberately set to `false` and the consent information still contains faculty-approval placeholders. The site therefore automatically uses local test mode. Responses are saved only in browser local storage; no research data are submitted to a server.
 
 **Do not use this preview for nurse recruitment or official research data collection.** Before recruitment, the study team must obtain faculty/ethics approval, approve the consent text and data-location statement, review the simulated stimuli with neonatal clinicians, provision an owner-controlled database and secure submission endpoint, configure authentication and administrator access, and complete end-to-end security tests.
 
