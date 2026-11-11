@@ -1,5 +1,5 @@
 // Public frontend settings only. The publishable key is designed for browser use.
-// NEVER put an sb_secret key or legacy service_role key in this file.
+// Never include any privileged backend credential in this browser file.
 window.APP_CONFIG = {
   supabaseUrl: "",
   supabasePublishableKey: "",
