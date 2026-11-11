@@ -6,15 +6,15 @@ const config = window.APP_CONFIG || {};
 // An unconfigured build is automatically a safe local preview. This keeps the demo usable
 // while ensuring it cannot submit research responses until a database is explicitly configured.
 const TEST_MODE = new URLSearchParams(location.search).get("test") === "1" ||
-  !config.supabaseUrl || !config.supabasePublishableKey;
+  !config.supabaseUrl || !config.supabasePublishableKey || config.researchCollectionEnabled !== true;
 const CONSENT_VERSION = config.consentVersion || "draft-1.0";
 const VERSION = config.appVersion || "0.2.2";
 const STORAGE_KEY = "newborn-breathing-survey-draft-v1";
 const TEST_STORAGE_KEY = "newborn-breathing-survey-test-submissions-v1";
 const supabaseReady = Boolean(config.supabaseUrl && config.supabasePublishableKey && window.supabase?.createClient);
-const consentDetailsReady = [config.studyTitle, config.studyContact, config.ethicsContact, config.ethicsApproval, config.dataRetention]
+const consentDetailsReady = [config.studyTitle, config.studyContact, config.ethicsContact, config.ethicsApproval, config.dataRetention, config.privacyNotice]
   .every(value => typeof value === "string" && value.trim() && !value.includes("[Insert"));
-const recruitmentReady = supabaseReady && consentDetailsReady && CONSENT_VERSION !== "draft-1.0";
+const recruitmentReady = supabaseReady && config.researchCollectionEnabled === true && consentDetailsReady && CONSENT_VERSION !== "draft-1.0";
 const supabase = supabaseReady ? window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey) : null;
 
 let draft = null;
@@ -341,6 +341,7 @@ if (config.studyContact) $("study-contact").textContent = config.studyContact;
 if (config.ethicsContact) $("ethics-contact").textContent = config.ethicsContact;
 if (config.ethicsApproval) $("approval-reference").textContent = config.ethicsApproval;
 if (config.dataRetention) $("data-retention").textContent = config.dataRetention;
+if (config.privacyNotice) $("privacy-copy").textContent = config.privacyNotice;
 if (recruitmentReady) $("approval-note").hidden = true;
 if (TEST_MODE && !recruitmentReady) {
   showNotice("PREVIEW / TEST MODE: deployment is not configured for research. You can explore the eight scenarios, but responses are stored only in this browser and are never sent to a research database. Do not use this link for nurse recruitment.", "info");
