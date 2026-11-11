@@ -10,7 +10,6 @@ A responsive browser-based simulator for a structured neonatal breathing observa
 
 ## Current release state
 
-The public website is deployed and the Supabase project is provisioned in Mumbai, India. The database schema and `submit-survey` Edge Function have been deployed. The administrator account `jmogire93@gmail.com` is on the study administrator allow-list.
 
 **Official research response collection remains disabled.** The public configuration deliberately keeps `researchCollectionEnabled: false`; the study title, ethics reference, contacts, retention wording and privacy statement still require faculty-approved values. The main participant link now runs in **database-backed test mode**: completed eight-scenario test submissions are sent to Supabase and the server marks them `is_test=true`. They appear in a separate test-results section in the administrator dashboard and are excluded from research summaries and official exports. Test-mode response drafts are held in the open page until completion and are not written to browser local storage. The optional `?test=1` route remains a local-only sandbox.
 
