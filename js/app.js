@@ -161,6 +161,9 @@ function paintRating() {
 }
 function addEvent(type, extra = {}) {
   const snapshot = engine ? engine.snapshot() : {};
+  if (Number.isFinite(Number(snapshot.live_seconds))) {
+    snapshot.live_seconds = Math.round(Math.min(LIVE_SECONDS, Math.max(0, Number(snapshot.live_seconds))) * 100) / 100;
+  }
   const event = { event_type: type, ...snapshot, ...extra };
   events.push(event);
   return event;
@@ -337,12 +340,24 @@ async function submitAll() {
     });
   } catch (error) {
     console.error("Survey submission failed", error);
+    const detail = await getSubmissionErrorMessage(error);
     const recovery = DATABASE_TEST_MODE
-      ? "The responses remain in this open page only. Do not refresh or close it. Check your connection, then retry the submission."
-      : "Your completed responses remain saved on this device. Check your connection, then retry the secure submission.";
-    showNotice("We could not confirm that your responses reached the study database. " + recovery, "error");
+      ? "The responses remain in this open page only. Do not refresh or close it. Correct the issue, then retry the submission."
+      : "Your completed responses remain saved on this device. Correct the issue, then retry the secure submission.";
+    const detailText = detail ? " Server message: " + detail + "." : "";
+    showNotice("We could not confirm that your responses reached the study database." + detailText + " " + recovery, "error");
     button.disabled = false; button.textContent = "Retry secure submission";
   }
+}
+async function getSubmissionErrorMessage(error) {
+  const context = error?.context;
+  if (context && typeof context.clone === "function") {
+    try {
+      const body = await context.clone().json();
+      if (body && typeof body.error === "string" && body.error.trim()) return body.error;
+    } catch { /* response may not contain JSON */ }
+  }
+  return typeof error?.message === "string" ? error.message : "";
 }
 function showThankYou({ title, message, reference = "" }) {
   setPanel("thank-you");
