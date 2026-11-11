@@ -12,7 +12,7 @@
 - [x] Apply the initial schema and row-level security policies.
 - [x] Deploy the `submit-survey` Edge Function.
 - [x] Create the administrator Auth user and add it to `public.study_admins`.
-- [x] Ensure the Edge Function is closed by default and rejects submissions without server-side release settings.
+- [x] Ensure the Edge Function stores completed runs as test records while research is closed, and only permits official research records when server-side release settings are approved.
 - [ ] Independently review database schema, RLS, endpoint validation and administrator access with the institution's data/security contact.
 - [ ] Confirm the institution's approval of the data region, hosting logs and any cross-border transfer arrangements.
 
@@ -30,10 +30,11 @@
 - [ ] Test the complete participant journey on desktop and mobile in a separate test project/environment.
 - [ ] Verify one complete eight-scenario submission creates one database row with all eight ordered responses and final questionnaire answers.
 - [ ] Verify retry after a lost response does not create duplicate submissions.
-- [ ] Verify browser preview data never reaches the database.
+- [x] Verify the optional `?test=1` browser-only sandbox does not send records to the database.
+- [ ] Verify main-site database test runs are stored as `is_test=true` and are visible only in the separate test-results area.
 - [ ] Verify anonymous visitors cannot read submissions and authenticated non-admin users cannot read submissions.
 - [ ] Verify the authorized administrator can log in, filter records and export CSV/Excel.
-- [ ] Verify submission errors preserve the local draft and do not show a false success message.
+- [ ] Verify database test submission errors keep the completed responses in the open page for retry, and do not show a false success message.
 - [ ] Complete the institution's data protection/security review and obtain written release approval.
 
 ## Open research collection only after all approvals
@@ -44,4 +45,4 @@
 - [ ] Confirm the participant page shows research collection active and the Edge Function accepts only the matching consent version.
 - [ ] Publish the recruitment link only after the above checks are signed off.
 
-**Current state:** the infrastructure is deployed, but participant research collection remains disabled. The public site is a technical preview and should not be used for recruitment.
+**Current state:** the infrastructure is deployed. The main participant link stores completed runs in Supabase as test records while official research collection remains disabled. The optional `?test=1` route is local-only. Neither mode should be used for participant recruitment.

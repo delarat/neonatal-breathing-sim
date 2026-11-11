@@ -17,7 +17,7 @@
 - Green/yellow/red assessment controls and timestamped rating changes.
 - Per-scenario confidence, realism and comment questions.
 - Final questionnaire.
-- Local preview mode and recoverable in-progress browser draft.
+- Database-backed test mode for completed runs, plus an explicitly local-only `?test=1` sandbox.
 - Supabase database schema, row-level security and secure submission Edge Function.
 - Authenticated, allow-listed administrator dashboard with summaries, filters, CSV export and Excel export.
 - Automated tests and GitHub Pages deployment workflow.
@@ -30,12 +30,13 @@
 - `public.submissions` and `public.study_admins` exist with RLS enabled.
 - Edge Function `submit-survey` is deployed.
 - Administrator Auth user `jmogire93@gmail.com` exists and is on the allow-list.
-- Current code update adds a server-side fail-closed requirement: no request can be stored unless `RESEARCH_COLLECTION_ENABLED=true` and the supplied consent version equals `APPROVED_CONSENT_VERSION`.
-- Public `config.js` currently sets `researchCollectionEnabled: false` and contains draft placeholders.
+- While `RESEARCH_COLLECTION_ENABLED` is not `true`, the Edge Function accepts completed runs only as test records and sets `is_test=true` server-side.
+- Once research collection is enabled, the endpoint requires the exact `APPROVED_CONSENT_VERSION` from the approved study materials.
+- Public `config.js` currently sets `researchCollectionEnabled: false` and `databaseTestMode: true`; consent and ethics placeholders remain.
 
 ## Research release state
 
-**Research data collection is not open.** The participant site runs in local-only technical preview mode. The Edge Function must remain disabled until faculty/ethics approval, data-location approval, clinical review, and final consent language are confirmed.
+**Official research data collection is not open.** The main participant site stores completed runs in Supabase as test records. The optional `?test=1` route remains local-only. The Edge Function will not create official research records until faculty/ethics approval, data-location approval, clinical review, final consent wording and server-side release settings are confirmed.
 
 ## Remaining owner tasks
 
