@@ -6,16 +6,16 @@ const config = window.APP_CONFIG || {};
 // An unconfigured build is automatically a safe local preview. This keeps the demo usable
 // while ensuring it cannot submit research responses until a database is explicitly configured.
 const TEST_MODE = new URLSearchParams(location.search).get("test") === "1" ||
-  !config.supabaseUrl || !config.supabaseAnonKey;
+  !config.supabaseUrl || !config.supabasePublishableKey;
 const CONSENT_VERSION = config.consentVersion || "draft-1.0";
-const VERSION = config.appVersion || "0.2.1";
+const VERSION = config.appVersion || "0.2.2";
 const STORAGE_KEY = "newborn-breathing-survey-draft-v1";
 const TEST_STORAGE_KEY = "newborn-breathing-survey-test-submissions-v1";
-const supabaseReady = Boolean(config.supabaseUrl && config.supabaseAnonKey && window.supabase?.createClient);
+const supabaseReady = Boolean(config.supabaseUrl && config.supabasePublishableKey && window.supabase?.createClient);
 const consentDetailsReady = [config.studyTitle, config.studyContact, config.ethicsContact, config.ethicsApproval, config.dataRetention]
   .every(value => typeof value === "string" && value.trim() && !value.includes("[Insert"));
 const recruitmentReady = supabaseReady && consentDetailsReady && CONSENT_VERSION !== "draft-1.0";
-const supabase = supabaseReady ? window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey) : null;
+const supabase = supabaseReady ? window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey) : null;
 
 let draft = null;
 let scenario = null;
