@@ -59,7 +59,10 @@ function validateSubmission(input:any):string|null{
     if(!Array.isArray(r.events)||!Array.isArray(r.rating_events)||r.events.length>100||r.rating_events.length>100)return"Rating timing records are missing or exceed the allowed size";
     for(const ev of r.rating_events){
       if(!RATINGS.has(ev?.color))return"A rating event has an invalid rating";
-      if(!Number.isFinite(Number(ev?.live_seconds))||Number(ev.live_seconds)<0||Number(ev.live_seconds)>30)return"A rating event has an invalid live timestamp";
+      const liveSeconds=Number(ev?.live_seconds);
+      // The browser advances the live clock in 25 ms increments. Permit only a
+      // 100 ms floating-point boundary tolerance; the payload is normalized below.
+      if(!Number.isFinite(liveSeconds)||liveSeconds < -0.1||liveSeconds > 30.1)return"A rating event has an invalid live timestamp";
     }
     if(typeof r.simulated_pattern!=="string"||r.simulated_pattern.length>300)return"Invalid simulated pattern metadata";
     if(String(r.comments??"").length>2000||String(r.additional_information_needed??"").length>2000)return"A comment is too long";
@@ -95,7 +98,21 @@ Deno.serve(async(req)=>{
   let input:any;
   try{input=JSON.parse(raw);}catch{return response({error:"Invalid JSON"},400,origin);}
   const problem=validateSubmission(input);
-  if(problem)return response({error:problem},400,origin);
+  if(problem){
+    // Log the specific validation reason without logging participant answers.
+    console.error("submit-survey validation rejected: " + problem);
+    return response({error:problem,code:"invalid_submission"},400,origin);
+  }
+  // Normalize sub-100 ms boundary drift caused by 25 ms animation-frame stepping.
+  // Keep stored observation times within the defined 0–30 second interval.
+  for(const r of input.responses){
+    for(const ev of [...(r.events??[]),...(r.rating_events??[])]){
+      const liveSeconds=Number(ev?.live_seconds);
+      if(Number.isFinite(liveSeconds)){
+        ev.live_seconds=Math.round(Math.min(30,Math.max(0,liveSeconds))*100)/100;
+      }
+    }
+  }
   if(researchCollectionEnabled && input.consent_version!==approvedConsentVersion){
     return response({error:"The submitted consent version does not match the currently approved study information."},409,origin);
   }
